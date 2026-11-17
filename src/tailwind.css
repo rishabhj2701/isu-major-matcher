@@ -1,0 +1,7 @@
+/* Tailwind v4, without preflight. Preflight would strip list bullets and
+   button defaults that the existing component CSS relies on, so we load only
+   the theme tokens and the utility layer. Utilities are used for layout in the
+   new hub/dashboard screens; component styling stays in styles.css. */
+@layer theme, base, components, utilities;
+@import 'tailwindcss/theme.css' layer(theme);
+@import 'tailwindcss/utilities.css' layer(utilities);

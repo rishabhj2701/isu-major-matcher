@@ -3,15 +3,23 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="theme-color" content="#7c1f32" />
-    <meta name="description" content="Explore Iowa State majors and learning communities with transparent, explainable recommendations." />
-    <title>ISU Major &amp; Learning-Community Matcher</title>
+    <meta name="theme-color" content="#9b1b30" />
+    <meta name="description" content="ISU FitFinder hub: explore Iowa State majors, learning communities, alumni experiences and advising prep with transparent, explainable recommendations." />
+    <title>ISU FitFinder — Major &amp; Learning-Community Hub</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-      href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700;800&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@500;600;700&family=Inter:wght@400;500;600;700;800&display=swap"
       rel="stylesheet"
     />
+    <!-- Set the theme before first paint so dark mode never flashes light. -->
+    <script>
+      try {
+        var t = localStorage.getItem('fitfinder.theme') ||
+          (matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+        document.documentElement.dataset.theme = t;
+      } catch (e) {}
+    </script>
   </head>
   <body>
     <div id="root"></div>

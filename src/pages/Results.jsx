@@ -1,13 +1,17 @@
-// Recommendation dashboard: top-3 majors (with an option to show more),
-// compare selection, and entry points to detail / comparison / summary pages.
+// Recommendation dashboard: top-3 majors (expandable to all), the don'ts
+// explorer (live what-if on the real engine), an optional thinking snapshot,
+// compare selection, and entry points to detail / comparison / summary.
 
 import { useMemo, useState } from 'react';
 import MajorCard from '../components/MajorCard.jsx';
+import DislikeExplorer from '../components/DislikeExplorer.jsx';
+import ThinkingSnapshot from '../components/ThinkingSnapshot.jsx';
+import Icon from '../components/Icon.jsx';
 import { matchMajors } from '../lib/matcher.js';
 import { AI_AVAILABLE } from '../services/aiExplainer.js';
 import { interestOptions } from '../data/majors.js';
 
-export default function Results({ profile, onOpenDetail, onCompare, onSummary, onRestart }) {
+export default function Results({ profile, onOpenDetail, onCompare, onSummary, onRestart, onPlayWorlds }) {
   const ranked = useMemo(() => matchMajors(profile), [profile]);
   const [showAll, setShowAll] = useState(false);
   const [compareIds, setCompareIds] = useState([]);
@@ -23,14 +27,15 @@ export default function Results({ profile, onOpenDetail, onCompare, onSummary, o
 
   return (
     <section className="results-page" aria-labelledby="results-heading">
-      <div className="results-head">
-        <h2 id="results-heading">Your top major matches</h2>
-        <p className="muted">
-          Based on your selections and our illustrative, transparent scoring model — not official
-          advising and not a validated predictor of success. Explanations are{' '}
+      <header className="pagehead">
+        <span className="eyebrow-plain">Your matches · {ranked.length} majors ranked</span>
+        <h1 id="results-heading">Your top major matches</h1>
+        <p>
+          Based on your selections and a transparent, documented scoring model — not official advising and
+          not a predictor of success. Explanations are{' '}
           {AI_AVAILABLE ? 'AI-assisted' : 'rule-based (AI explanation is optional and not enabled in this prototype)'}.
         </p>
-      </div>
+      </header>
 
       <div className="results-grid">
         {visible.map((scored, i) => (
@@ -53,20 +58,26 @@ export default function Results({ profile, onOpenDetail, onCompare, onSummary, o
             Show all {ranked.length} majors
           </button>
         )}
-        <button
-          type="button"
-          className="secondary-button"
-          disabled={compareIds.length < 2}
-          onClick={() => onCompare(compareIds)}
-        >
-          Compare selected ({compareIds.length})
+        <button type="button" className="secondary-button" disabled={compareIds.length < 2} onClick={() => onCompare(compareIds)}>
+          <Icon name="swap" size={14} /> Compare selected ({compareIds.length})
         </button>
         <button type="button" className="primary" onClick={() => onSummary(ranked.slice(0, 3))}>
-          Build advising summary →
+          Build advising summary <Icon name="arrow" size={14} />
         </button>
-        <button type="button" className="link-button" onClick={onRestart}>
-          Start over
-        </button>
+        <button type="button" className="link-button" onClick={onRestart}>Edit my answers</button>
+      </div>
+
+      <div className="results-cols">
+        <DislikeExplorer profile={profile} onOpenDetail={onOpenDetail} />
+        {profile.thinking ? (
+          <ThinkingSnapshot thinking={profile.thinking} onReplay={onPlayWorlds} />
+        ) : (
+          <section className="panel think-panel cta" aria-labelledby="worlds-cta">
+            <div className="panelhead"><h3 id="worlds-cta"><Icon name="bolt" size={18} /> Thinking Worlds</h3><span className="badge">Optional · 4 min</span></div>
+            <p className="muted">Three short mini-games (Number Forge, Logic Lab, Idea Garden) give you a relative snapshot of how you like to think. For reflection only — it never changes these scores.</p>
+            <button type="button" className="btn-pill" onClick={onPlayWorlds}>Enter the worlds <span className="go"><Icon name="arrow" size={14} /></span></button>
+          </section>
+        )}
       </div>
     </section>
   );

@@ -44,7 +44,7 @@ const STAGES = [
   },
   {
     key: 'dislikes', field: 'dislikes', type: 'multi', optional: true,
-    title: 'What would you rather avoid?', hint: 'Optional. We gently lower majors heavy in these — never hide them.',
+    title: "What are your don'ts?", hint: "The most decisive question. Majors that lean on these drop by a capped amount — never hidden. Pick honestly.",
     options: interestOptions, xp: 15,
   },
   {
@@ -76,9 +76,15 @@ const emptyProfile = {
   interests: [], dislikes: [], strengths: [], workStyles: [], careerFields: [], priority: '',
 };
 
+// A saved profile may carry extra keys (e.g. a thinking snapshot); fill any
+// missing questionnaire fields so the stages always have arrays to read.
+function withDefaults(p) {
+  return p ? { ...emptyProfile, ...p } : emptyProfile;
+}
+
 export default function Quest({ initialProfile, onComplete, onExit }) {
   const [i, setI] = useState(0);
-  const [profile, setProfile] = useState(initialProfile ?? emptyProfile);
+  const [profile, setProfile] = useState(() => withDefaults(initialProfile));
   const [dir, setDir] = useState('fwd');
   const [error, setError] = useState('');
   const [toast, setToast] = useState(null);
@@ -206,7 +212,7 @@ export default function Quest({ initialProfile, onComplete, onExit }) {
 
       <div className="quest-nav">
         <button type="button" className="secondary-button" onClick={back}>
-          {i === 0 ? '← Home' : '← Back'}
+          {i === 0 ? '← Hub' : '← Back'}
         </button>
         <span className="quest-selected">
           {selectedCount > 0 ? `${selectedCount} selected` : stage.optional ? 'Optional — skip if you like' : 'Make a pick'}

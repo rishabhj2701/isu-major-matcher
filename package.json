@@ -7,14 +7,16 @@
     "dev": "vite --host",
     "build": "vite build",
     "preview": "vite preview",
-    "test": "node src/lib/matcher.test.mjs"
+    "test": "node src/lib/matcher.test.mjs && node src/lib/hub.test.mjs"
   },
   "dependencies": {
     "react": "^19.2.0",
     "react-dom": "^19.2.0"
   },
   "devDependencies": {
+    "@tailwindcss/vite": "^4.3.5",
     "@vitejs/plugin-react": "^5.2.0",
+    "tailwindcss": "^4.3.5",
     "vite": "^7.2.0"
   }
 }
