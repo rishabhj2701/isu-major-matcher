@@ -38,6 +38,7 @@ export default function Results({ profile, onOpenDetail, onCompare, onSummary, o
             key={scored.id}
             scored={scored}
             rank={i + 1}
+            index={i}
             dislikeLabels={dislikeLabels}
             onOpenDetail={onOpenDetail}
             compareChecked={compareIds.includes(scored.id)}

@@ -1,21 +1,45 @@
-// Welcome / landing page.
+// Welcome / landing page with a hero, process overview, and stat badges.
+
+import { majors } from '../data/majors.js';
 
 export default function Home({ onStart }) {
   return (
     <section className="home" aria-labelledby="home-heading">
-      <span className="eyebrow">AWS Kiro Hackathon 2026 · Team 2 · Use Case 3</span>
-      <h1 id="home-heading">
-        Find an ISU major that fits <span className="accent">how you think and what you enjoy.</span>
-      </h1>
-      <p className="lead">
-        The Major &amp; Learning-Community Matcher helps current Iowa State students who are
-        undeclared or considering a change explore majors, learning communities, and academic
-        pathways — with a transparent reason behind every recommendation.
-      </p>
+      <div className="hero">
+        <span className="eyebrow">★ AWS Kiro Hackathon 2026 · Team 2 · Use Case 3</span>
+        <h1 id="home-heading">
+          Find an ISU major that fits{' '}
+          <span className="accent">how you think and what you enjoy.</span>
+        </h1>
+        <p className="lead">
+          The Major &amp; Learning-Community Matcher helps current Iowa State students who are
+          undeclared or considering a change explore majors, learning communities, and academic
+          pathways — with a transparent reason behind every recommendation.
+        </p>
 
-      <button type="button" className="primary big" onClick={onStart}>
-        Find My Major →
-      </button>
+        <button type="button" className="primary big" onClick={onStart}>
+          Find My Major →
+        </button>
+
+        <div className="hero-stats">
+          <div className="hero-stat">
+            <b>{majors.length}</b>
+            <span>verified-core majors</span>
+          </div>
+          <div className="hero-stat">
+            <b>5</b>
+            <span>weighted match factors</span>
+          </div>
+          <div className="hero-stat">
+            <b>100%</b>
+            <span>explainable scores</span>
+          </div>
+          <div className="hero-stat">
+            <b>~2 min</b>
+            <span>to your matches</span>
+          </div>
+        </div>
+      </div>
 
       <ol className="how-it-works">
         <li>
