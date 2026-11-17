@@ -1,4 +1,4 @@
-# ISU FitFinder — Major & Learning-Community Hub
+# HelloMajor — Major & Learning-Community Hub
 
 AWS Kiro Hackathon · Iowa State University · November 17, 2026 · Team 2 · Use Case 3
 

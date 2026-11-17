@@ -13,7 +13,7 @@ export const faq = [
   {
     id: 'official',
     q: 'Is this official advising?',
-    a: 'No. ISU FitFinder is a student-built hackathon prototype. It gives informational guidance based on your self-selected interests and a transparent scoring model. It is not a degree audit, not a predictor of success, and not an official Iowa State University service.',
+    a: 'No. HelloMajor is a student-built hackathon prototype. It gives informational guidance based on your self-selected interests and a transparent scoring model. It is not a degree audit, not a predictor of success, and not an official Iowa State University service.',
     source: { label: 'ISU Academic Advising', url: 'https://www.advising.iastate.edu/' },
     keywords: 'official advising advisor real accurate trust prototype disclaimer',
   },

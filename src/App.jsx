@@ -124,7 +124,7 @@ export default function App() {
       {role && (
         <header className="hud">
           <button type="button" className="brand" onClick={() => setView('hub')}>
-            <span className="brand-mark" aria-hidden="true">◆</span><b>FitFinder</b>
+            <span className="brand-mark" aria-hidden="true">◆</span><b>HelloMajor</b>
           </button>
 
           {role === 'student' && (

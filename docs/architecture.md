@@ -1,4 +1,4 @@
-# Architecture — ISU FitFinder hub
+# Architecture — HelloMajor hub
 
 Hackathon prototype · Team 2 · Use Case 3
 

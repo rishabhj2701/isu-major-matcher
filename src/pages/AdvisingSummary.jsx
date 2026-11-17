@@ -22,7 +22,7 @@ export default function AdvisingSummary({ topScored, profile, onBack }) {
 
       <div className="summary-doc">
         <header className="summary-head">
-          <span className="eyebrow-plain">ISU FitFinder · advising summary · {new Date().toLocaleDateString()}</span>
+          <span className="eyebrow-plain">HelloMajor · advising summary · {new Date().toLocaleDateString()}</span>
           <h2 id="summary-heading">Your advising summary</h2>
           <p className="muted">
             A starting point for a conversation with an ISU academic advisor. Informational guidance,

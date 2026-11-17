@@ -17,7 +17,7 @@ export function RolePicker({ onPick }) {
   return (
     <section className="rolepick" aria-labelledby="role-heading">
       <div className="orb-hero" aria-hidden="true"><span className="orb-ring" /><span className="orb-ring d2" /><span className="orb-core">◆</span></div>
-      <span className="eyebrow-plain">ISU FitFinder</span>
+      <span className="eyebrow-plain">HelloMajor</span>
       <h1 id="role-heading">Choose your path</h1>
       <div className="role-grid">
         <button type="button" className="role-card reveal" onClick={() => onPick('student')}>
