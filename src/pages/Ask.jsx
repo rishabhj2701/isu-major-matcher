@@ -10,6 +10,7 @@ import { buildAdvisorQuestions, questionsToText } from '../lib/advisorQuestions.
 import { ask, SUGGESTED_QUESTIONS } from '../lib/askEngine.js';
 import { COMMON_QUESTIONS } from '../data/syntheticSessions.js';
 import Icon from '../components/Icon.jsx';
+import { track } from '../lib/events.js';
 
 export default function Ask({ profile, topScored = [], role = 'student', onStartQuest }) {
   const questions = useMemo(() => buildAdvisorQuestions(profile ?? {}, topScored), [profile, topScored]);
@@ -25,6 +26,7 @@ export default function Ask({ profile, topScored = [], role = 'student', onStart
   function send(text) {
     const q = (text ?? input).trim();
     if (!q) return;
+    track('ask');
     setInput('');
     setThread((t) => [...t, { who: 'you', text: q }]);
     setTyping(true);
@@ -50,13 +52,9 @@ export default function Ask({ profile, topScored = [], role = 'student', onStart
   return (
     <section className="askpage" aria-labelledby="ask-heading">
       <header className="pagehead">
-        <span className="eyebrow-plain">{role === 'advisor' ? 'What students ask · prepared answers' : 'Ask & prep'}</span>
-        <h1 id="ask-heading">{role === 'advisor' ? 'Questions students bring, answered from sources' : 'Walk into advising with the right questions'}</h1>
-        <p>
-          {role === 'advisor'
-            ? 'The most common questions from recent (synthetic) sessions, and the rule-based, source-cited answers the student view gives. Useful for seeing what students have already been told.'
-            : "Questions below are generated from your actual answers and matches, each with the reason it appeared. Your don'ts get their own question. Then test the catalog Q&A."}
-        </p>
+        <span className="eyebrow-plain">{role === 'advisor' ? 'What students ask' : 'Mission 7 · Prepare'}</span>
+        <h1 id="ask-heading">{role === 'advisor' ? 'Common questions, sourced answers' : 'Your advisor questions'}</h1>
+        <p>{role === 'advisor' ? 'Synthetic counts · answers are rule-based and cite official pages.' : "Generated from your answers. Your don'ts get their own question."}</p>
       </header>
 
       <div className="ask-cols">
@@ -111,9 +109,7 @@ export default function Ask({ profile, topScored = [], role = 'student', onStart
             <h2 id="bot-heading"><Icon name="search" size={18} /> Ask the catalog</h2>
             <span className="badge" title="Keyword retrieval over local verified data. Not a language model.">Rule-based · not AI</span>
           </div>
-          <p className="muted small">
-            Answers come only from the structured data in this app and link to the official page. Below a confidence floor it says so and points you to an advisor. A server-side, catalog-grounded Bedrock version is the planned upgrade; nothing here pretends to be it.
-          </p>
+          <p className="muted small">Answers only from verified local data, with a source link. Unsure → "ask an advisor".</p>
 
           <div className="thread" aria-live="polite">
             {thread.length === 0 && (

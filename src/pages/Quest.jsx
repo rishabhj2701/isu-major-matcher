@@ -158,7 +158,7 @@ export default function Quest({ initialProfile, onComplete, onExit }) {
       {/* HUD */}
       <div className="quest-hud">
         <div className="hud-left">
-          <span className="level-chip">LV {level}</span>
+          <span className="level-chip">Level 2 · LV {level}</span>
           <div className="xp-wrap" aria-label={`Experience ${xpPct} percent`}>
             <div className="xp-bar"><div className="xp-fill" style={{ width: `${xpPct}%` }} /></div>
             <span className="xp-text">{earnedXp} / {TOTAL_XP} XP</span>

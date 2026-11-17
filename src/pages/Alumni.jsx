@@ -8,6 +8,7 @@ import { useMemo, useState } from 'react';
 import { alumniPosts, POST_TEMPLATES, ROLES } from '../data/alumniPosts.js';
 import { majors, interestOptions } from '../data/majors.js';
 import Icon from '../components/Icon.jsx';
+import CommentThread from '../components/CommentThread.jsx';
 
 const MAJOR_NAME = Object.fromEntries(majors.map((m) => [m.id, m.name]));
 const INTEREST = Object.fromEntries(interestOptions.map((o) => [o.id, o.label]));
@@ -53,9 +54,9 @@ export default function Alumni({ profile, topIds = [] }) {
   return (
     <section className="alumni" aria-labelledby="alumni-heading">
       <header className="pagehead">
-        <span className="eyebrow-plain">Alumni network · synthetic demo content</span>
-        <h1 id="alumni-heading">Real experiences, from people who were where you are</h1>
-        <p>Why I chose, a real week in, I switched from, what I wish I knew. Posts carry a role badge. In a pilot, authors are verified ISU students, alumni, faculty and advisors; here every story is fictional.</p>
+        <span className="eyebrow-plain">Mission 6 · Connect</span>
+        <h1 id="alumni-heading">Stories from people like you</h1>
+        <p>Synthetic demo stories · in a pilot, verified ISU students, alumni, faculty and advisors.</p>
       </header>
 
       <div className="filters">
@@ -126,13 +127,6 @@ export default function Alumni({ profile, topIds = [] }) {
                   <Icon name="sparkle" size={13} /> Like you: {[...p.overlap.map((t) => INTEREST[t]), ...p.sharedDislike.map((d) => `also avoids ${INTEREST[d]?.toLowerCase()}`)].join(' · ')}
                 </p>
               )}
-              {p.replies?.length > 0 && (
-                <ul className="replies">
-                  {p.replies.map((r, j) => (
-                    <li key={j}><span className={`role-badge tone-${ROLES[r.role].tone}`}>{ROLES[r.role].label}</span> <b>{r.author}:</b> {r.body}</li>
-                  ))}
-                </ul>
-              )}
               <div className="post-actions">
                 <button type="button" className={`vote${voted ? ' on' : ''}`} aria-pressed={voted} onClick={() => setVotes((v) => ({ ...v, [p.id]: !v[p.id] }))}>
                   <Icon name="thumb" size={14} /> {p.upvotes + (voted ? 1 : 0)}
@@ -142,6 +136,7 @@ export default function Alumni({ profile, topIds = [] }) {
                 </button>
                 <span className="muted small">Experience, not official advice</span>
               </div>
+              <CommentThread threadId={`post-${p.id}`} seed={p.replies ?? []} startOpen={(p.replies?.length ?? 0) > 0} placeholder="Ask or share something…" />
             </article>
           );
         })}

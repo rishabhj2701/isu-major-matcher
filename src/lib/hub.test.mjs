@@ -8,6 +8,7 @@ import { buildAdvisorQuestions } from './advisorQuestions.js';
 import { summarizeThinking, countIdeas } from './thinking.js';
 import { generateSessions, aggregate } from '../data/syntheticSessions.js';
 import { topMatches } from './matcher.js';
+import { unlockedIds, ACHIEVEMENTS } from './achievements.js';
 
 let passed = 0;
 function test(name, fn) {
@@ -103,6 +104,14 @@ test('synthetic sessions are deterministic and anonymous', () => {
   const agg = aggregate(a);
   assert.equal(agg.total, 20);
   assert.equal(agg.undeclared + agg.changing, 20);
+});
+
+test('achievements unlock from real actions only', () => {
+  assert.deepEqual(unlockedIds({}), []);
+  const ids = unlockedIds({ profile: student, visited: ['compare', 'summary'], counts: { ask: 3, comment: 1 }, recentCount: 3 });
+  for (const id of ['quest', 'honest', 'comparer', 'ready', 'curious', 'voice', 'scout']) assert.ok(ids.includes(id), id);
+  assert.ok(!ids.includes('mind') && !ids.includes('whatif'));
+  assert.equal(new Set(ACHIEVEMENTS.map((a) => a.id)).size, ACHIEVEMENTS.length);
 });
 
 console.log(`\n${passed} checks passed.`);

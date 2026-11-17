@@ -7,6 +7,7 @@ import { useMemo, useState } from 'react';
 import { majors } from '../data/majors.js';
 import { learningCommunitiesByMajor, LEARNING_COMMUNITIES_DIRECTORY } from '../data/learningCommunities.js';
 import Icon from '../components/Icon.jsx';
+import CommentThread from '../components/CommentThread.jsx';
 
 export default function Communities({ onOpenMajor, topIds = [] }) {
   const colleges = useMemo(() => {
@@ -28,12 +29,9 @@ export default function Communities({ onOpenMajor, topIds = [] }) {
   return (
     <section className="communities" aria-labelledby="lc-heading">
       <header className="pagehead">
-        <span className="eyebrow-plain">Learning communities</span>
-        <h1 id="lc-heading">Find your people in your major</h1>
-        <p>
-          Iowa State runs many first-year and major-based learning communities. We list {listed} references across {majors.length} majors
-          and label each by verification status. Eligibility is never assumed — confirm on the official directory.
-        </p>
+        <span className="eyebrow-plain">Mission 5 · Belong</span>
+        <h1 id="lc-heading">Find your people</h1>
+        <p>{listed} community references · unverified ones are labelled · confirm eligibility on the official directory.</p>
         <a className="btn-pill" href={LEARNING_COMMUNITIES_DIRECTORY} target="_blank" rel="noopener noreferrer">
           Open the official directory <span className="go"><Icon name="arrow" size={14} /></span>
         </a>
@@ -80,6 +78,7 @@ export default function Communities({ onOpenMajor, topIds = [] }) {
               <button type="button" className="textbtn" onClick={() => onOpenMajor(major.id)}>Major details <Icon name="arrow" size={13} /></button>
               <a className="textbtn" href={major.catalogUrl} target="_blank" rel="noopener noreferrer">Catalog ↗</a>
             </div>
+            <CommentThread threadId={`lc-${major.id}`} placeholder={`Ask about ${major.name} communities…`} />
           </article>
         ))}
         {!rows.length && <p className="empty">No majors match this filter.</p>}

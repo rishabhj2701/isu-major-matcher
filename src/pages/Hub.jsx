@@ -1,77 +1,68 @@
-// The hub: first a role pick (Student / Advisor), then a dashboard of tiles,
-// stats, a recent timeline and short notes. No login — the role only changes
-// which tools are shown. Everything is local and synthetic.
+// The hub as a game: a role pick ("choose your path"), then a mission map.
+// Minimal text. Big nodes. Progress, XP and an archetype carry the story.
 
 import { majors } from '../data/majors.js';
 import { catalog } from '../data/catalog.js';
-import { alumniPosts } from '../data/alumniPosts.js';
-import Tile from '../components/Tile.jsx';
-import StatTile from '../components/StatTile.jsx';
 import Icon from '../components/Icon.jsx';
+import { MISSIONS, archetypeFor, missionState } from '../lib/progress.js';
+import { useCountUp } from '../lib/useCountUp.js';
+import { ACHIEVEMENTS } from '../lib/achievements.js';
 
-const ROLE_CARDS = [
-  {
-    id: 'student',
-    icon: 'grad',
-    title: "I'm a student",
-    blurb: 'Undeclared or thinking about a change. Play the quest, see explainable matches, prep for advising.',
-  },
-  {
-    id: 'advisor',
-    icon: 'users',
-    title: "I'm an advisor",
-    blurb: 'See grouped interest trends, common don\'ts and questions, and prep cards for upcoming sessions.',
-  },
-];
+function HeroStat({ value, label }) {
+  const n = useCountUp(value, 1200);
+  return <div className="hero-stat"><b>{n}</b><span>{label}</span></div>;
+}
 
 export function RolePicker({ onPick }) {
   return (
     <section className="rolepick" aria-labelledby="role-heading">
-      <div className="rolepick-hero">
-        <span className="eyebrow-plain">ISU FitFinder · one hub, every tool</span>
-        <h1 id="role-heading">Who's exploring today?</h1>
-        <p className="lead-plain">
-          A major &amp; learning-community matcher for current Iowa State students, with a transparent
-          reason behind every recommendation. Pick a view to start. You can switch any time.
-        </p>
-      </div>
+      <div className="orb-hero" aria-hidden="true"><span className="orb-ring" /><span className="orb-ring d2" /><span className="orb-core">◆</span></div>
+      <span className="eyebrow-plain">ISU FitFinder</span>
+      <h1 id="role-heading">Choose your path</h1>
       <div className="role-grid">
-        {ROLE_CARDS.map((r, i) => (
-          <button key={r.id} type="button" className="role-card reveal" style={{ '--delay': `${i * 110}ms` }} onClick={() => onPick(r.id)}>
-            <span className="role-icon"><Icon name={r.icon} size={26} /></span>
-            <span className="role-title">{r.title}</span>
-            <span className="role-blurb">{r.blurb}</span>
-            <span className="btn-pill">Continue <span className="go"><Icon name="arrow" size={14} /></span></span>
-          </button>
-        ))}
+        <button type="button" className="role-card reveal" onClick={() => onPick('student')}>
+          <span className="role-icon"><Icon name="grad" size={28} /></span>
+          <span className="role-title">Student</span>
+          <span className="role-blurb">Find your major</span>
+        </button>
+        <button type="button" className="role-card alt reveal" style={{ '--delay': '100ms' }} onClick={() => onPick('advisor')}>
+          <span className="role-icon"><Icon name="users" size={28} /></span>
+          <span className="role-title">Advisor</span>
+          <span className="role-blurb">See the trends</span>
+        </button>
       </div>
-      <p className="disclaimer-plain">
-        Hackathon prototype. No sign-in, no real records: everything runs in your browser on
-        synthetic data. Not an official Iowa State University service.
-      </p>
+      <p className="disclaimer-plain">Prototype · synthetic data · no sign-in · not official ISU advising</p>
     </section>
   );
 }
 
-export default function Hub({ role, profile, topScored, recent = [], go }) {
-  const hasResults = Boolean(profile && topScored?.length);
+export default function Hub({ role, profile, topScored, recent = [], visited = [], unlocked = [], go }) {
+  const state = missionState(profile, visited);
+  const arch = archetypeFor(profile);
   const first = topScored?.[0];
 
   if (role === 'advisor') {
     return (
       <section className="hub" aria-labelledby="hub-heading">
         <header className="pagehead">
-          <span className="eyebrow-plain">Advisor view · grouped, synthetic data</span>
-          <h1 id="hub-heading">Advising hub</h1>
-          <p>What students are exploring, what they want to avoid, and what they ask — so sessions start further along.</p>
+          <span className="eyebrow-plain">Command center</span>
+          <h1 id="hub-heading">What students are exploring</h1>
         </header>
-        <div className="tiles">
-          <Tile icon="chart" title="Trends dashboard" blurb="Interest demand, common don'ts, status mix and top-recommended majors across recent sessions." chip="Live demo data" chipTone="gold" featured onClick={() => go('advisor')} delay={0} />
-          <Tile icon="message" title="Questions students ask" blurb="The most common questions brought to advising, with a prepared, source-linked answer for each." onClick={() => go('ask')} delay={70} />
-          <Tile icon="layers" title="Browse all majors" blurb={`All ${catalog.length} verified undergraduate majors by college, with official catalog links.`} onClick={() => go('catalog')} delay={140} />
-          <Tile icon="book" title="Learning communities" blurb="Every community reference we hold, its verification status, and the official directory." onClick={() => go('communities')} delay={210} />
-          <Tile icon="users" title="Alumni network" blurb="Experience stories students read before a session: why I chose, a real week, I switched." onClick={() => go('alumni')} delay={210} />
-          <Tile icon="compass" title="Walk the student quest" blurb="See exactly what a student sees, from the quest to the advising summary." onClick={() => go('quest')} delay={280} />
+        <div className="mission-grid adv">
+          {[
+            { view: 'advisor', icon: 'chart', title: 'Trends', sub: 'Demand & don\'ts' },
+            { view: 'ask', icon: 'message', title: 'Questions', sub: 'What students ask' },
+            { view: 'catalog', icon: 'layers', title: 'Catalog', sub: `${catalog.length} majors` },
+            { view: 'communities', icon: 'book', title: 'Communities', sub: 'Verified refs' },
+            { view: 'alumni', icon: 'users', title: 'Stories', sub: 'Alumni network' },
+            { view: 'quest', icon: 'compass', title: 'Preview', sub: 'The student quest' },
+          ].map((m, i) => (
+            <button key={m.view} type="button" className="mission reveal" style={{ '--delay': `${i * 70}ms` }} onClick={() => go(m.view)}>
+              <span className="mission-node"><Icon name={m.icon} size={26} /></span>
+              <span className="mission-title">{m.title}</span>
+              <span className="mission-sub">{m.sub}</span>
+            </button>
+          ))}
         </div>
       </section>
     );
@@ -79,68 +70,92 @@ export default function Hub({ role, profile, topScored, recent = [], go }) {
 
   return (
     <section className="hub" aria-labelledby="hub-heading">
-      <header className="pagehead">
-        <span className="eyebrow-plain">Student view · AWS Kiro Hackathon 2026 · Team 2</span>
-        <h1 id="hub-heading">{hasResults ? 'Welcome back. Your matches are ready.' : 'Find a major that fits how you think.'}</h1>
-        <p>
-          {hasResults
-            ? `Top match right now: ${first.name} (${first.fit}/100 overlap). Explore pathways, test your don'ts, and prep questions for your advisor.`
-            : 'Play a two-minute quest, get transparent major matches, and see learning communities and real stories. No sign-in, nothing stored outside this browser.'}
-        </p>
-        {!hasResults && (
-          <button type="button" className="btn-pill big" onClick={() => go('quest')}>
-            Find My Major <span className="go"><Icon name="arrow" size={14} /></span>
-          </button>
-        )}
-      </header>
-
-      <div className="stats">
-        <StatTile label="Verified ISU majors" value={catalog.length} sub={`${majors.length} scored by the quest`} delay={0} />
-        <StatTile label="Weighted match factors" value={5} delay={60} />
-        <StatTile label="Experience stories" value={alumniPosts.length} delay={120} />
-        <StatTile label="Your top overlap" value={hasResults ? first.fit : 0} suffix={hasResults ? '/100' : ''} text={hasResults ? undefined : 'Not yet'} delay={180} />
+      <div className="hero-card reveal">
+        <div className="hero-left">
+          <span className="eyebrow-plain">{state.hasProfile ? `Level ${state.level} · ${state.levelName}` : 'New quest'}</span>
+          <h1 id="hub-heading">{state.hasProfile ? <><span className="arch-emoji" aria-hidden="true">{arch.emoji}</span> {arch.name}</> : 'Find your major'}</h1>
+          <p className="hero-sub">
+            {state.hasProfile && first
+              ? <>Top match: <b>{first.name}</b></>
+              : <>Two minutes. Your likes, your don'ts, your matches.</>}
+          </p>
+          <div className="hero-actions">
+            {state.next ? (
+              <button type="button" className="btn-glow" onClick={() => go(state.next.view)}>
+                {state.hasProfile ? `Next: ${state.next.title}` : 'Begin'} <span className="go"><Icon name="arrow" size={15} /></span>
+              </button>
+            ) : (
+              <button type="button" className="btn-glow" onClick={() => go('summary')}>Advising summary <span className="go"><Icon name="arrow" size={15} /></span></button>
+            )}
+            {state.hasProfile && <button type="button" className="btn-ghost" onClick={() => go('results')}>My matches</button>}
+          </div>
+          <div className="hero-stats">
+            <HeroStat value={catalog.length} label="ISU majors" />
+            <HeroStat value={majors.length} label="Scored" />
+            <HeroStat value={MISSIONS.filter((m) => state.done[m.id]).length} label={`of ${MISSIONS.length} missions`} />
+          </div>
+        </div>
+        <div className="hero-right" aria-hidden="true">
+          <div className="orb-hero small"><span className="orb-ring" /><span className="orb-ring d2" /><span className="orb-core">{state.hasProfile ? arch.emoji : '🧭'}</span></div>
+        </div>
       </div>
 
-      <div className="tiles">
-        <Tile icon="compass" title={hasResults ? 'Replay Major Quest' : 'Major Quest'} blurb="One question per screen, big cards, XP and levels. Your don'ts count as much as your likes." chip={hasResults ? 'Completed' : 'Start here'} chipTone={hasResults ? 'good' : 'gold'} featured={!hasResults} onClick={() => go('quest')} delay={0} />
-        <Tile icon="chart" title="My results" blurb="Top matches with a factor-by-factor breakdown, radar, and a live don'ts explorer." chip={hasResults ? `${topScored.length} ranked` : 'Needs quest'} chipTone={hasResults ? 'good' : 'neutral'} disabled={!hasResults} onClick={() => go('results')} delay={70} />
-        <Tile icon="bolt" title="Thinking Worlds" blurb="Three short mini-games: Number Forge, Logic Lab, Idea Garden. A reflection snapshot, never a score." chip={profile?.thinking ? 'Played' : 'Optional'} chipTone={profile?.thinking ? 'good' : 'neutral'} onClick={() => go('worlds')} delay={140} />
-        <Tile icon="layers" title="Browse all majors" blurb={`Every one of ${catalog.length} verified ISU undergraduate majors, searchable by college. Nothing is hidden.`} chip={`${majors.length} scored`} chipTone="good" onClick={() => go('catalog')} delay={210} />
-        <Tile icon="book" title="Learning communities" blurb="Community references for each major, labelled by verification status, plus the official directory." onClick={() => go('communities')} delay={280} />
-        <Tile icon="users" title="Alumni network" blurb="Why I chose, a real week in, I switched from: stories from people with profiles like yours." chip="Synthetic" chipTone="neutral" onClick={() => go('alumni')} delay={350} />
-        <Tile icon="message" title="Ask & prep" blurb="Questions to bring to your advisor, generated from your answers, plus a source-cited catalog Q&A." onClick={() => go('ask')} delay={420} />
+      <div className="xp-strip" aria-label={`${state.xp} of ${state.total} XP`}>
+        <span className="xp-label">XP</span>
+        <span className="xp-track"><span className="xp-fill" style={{ width: `${(state.xp / state.total) * 100}%` }} /></span>
+        <span className="xp-num">{state.xp} / {state.total}</span>
       </div>
 
-      <div className="hub-cols">
-        <section className="panel" aria-labelledby="recent-heading">
-          <div className="panelhead"><h2 id="recent-heading">Recently viewed</h2><span className="badge">This browser</span></div>
-          {recent.length ? (
-            <ul className="timeline">
-              {recent.map((r) => {
-                const m = majors.find((x) => x.id === r.id);
-                if (!m) return null;
-                return (
-                  <li key={r.id}>
-                    <span className="ldot" aria-hidden="true" />
-                    <button type="button" className="tl-link" onClick={() => go('detail', r.id)}>{m.name}</button>
-                    <small>{m.college.split(' / ')[0]}</small>
-                  </li>
-                );
-              })}
-            </ul>
-          ) : (
-            <p className="empty">Majors you open appear here.</p>
-          )}
-        </section>
+      <ol className="mission-grid" aria-label="Missions">
+        {MISSIONS.map((m, i) => {
+          const done = state.done[m.id];
+          const locked = m.needsProfile && !state.hasProfile;
+          const isNext = state.next?.id === m.id;
+          return (
+            <li key={m.id}>
+              <button
+                type="button"
+                className={`mission reveal${done ? ' done' : ''}${isNext ? ' next' : ''}${locked ? ' locked' : ''}`}
+                style={{ '--delay': `${i * 70}ms` }}
+                onClick={() => !locked && go(m.view)}
+                disabled={locked}
+                aria-label={`${m.title}: ${m.sub}${done ? ', complete' : locked ? ', locked' : ''}`}
+              >
+                <span className="mission-step">{i + 1}</span>
+                <span className="mission-node"><Icon name={done ? 'check' : locked ? 'shield' : m.icon} size={26} /></span>
+                <span className="mission-title">{m.title}</span>
+                <span className="mission-sub">{m.sub}</span>
+                <span className="mission-xp">{done ? '✓' : `+${m.xp} XP`}</span>
+              </button>
+            </li>
+          );
+        })}
+      </ol>
 
-        <section className="panel" aria-labelledby="notes-heading">
-          <div className="panelhead"><h2 id="notes-heading">What's new</h2></div>
-          <ul className="notes">
-            <li className="note"><span className="ldot new" aria-hidden="true" /><div><b>Don'ts explorer</b><p>Toggle a dislike on the results page and watch the ranking re-run live.</p><small>Today</small></div></li>
-            <li className="note"><span className="ldot new" aria-hidden="true" /><div><b>Alumni network</b><p>Experience stories with role badges and a "people like you" filter.</p><small>Today</small></div></li>
-            <li className="note"><span className="ldot" aria-hidden="true" /><div><b>Verified core data</b><p>Major names, colleges and catalog links checked against catalog.iastate.edu.</p><small>Nov 17</small></div></li>
-          </ul>
-        </section>
+      <section className="badges" aria-label="Achievements">
+        <div className="badges-head"><b>Achievements</b><span className="badge">{unlocked.length} / {ACHIEVEMENTS.length}</span></div>
+        <ul>
+          {ACHIEVEMENTS.map((a, i) => {
+            const on = unlocked.includes(a.id);
+            return (
+              <li key={a.id} className={`ach${on ? ' on' : ''} reveal`} style={{ '--delay': `${i * 40}ms` }} title={`${a.name} — ${on ? 'unlocked' : a.how}`}>
+                <span className="ach-icon" aria-hidden="true">{on ? a.emoji : '🔒'}</span>
+                <span className="ach-name">{a.name}</span>
+                <span className="sr-only">{on ? 'unlocked' : `locked: ${a.how}`}</span>
+              </li>
+            );
+          })}
+        </ul>
+      </section>
+
+      <div className="hub-row solo">
+        <div className="recent-strip reveal">
+          <small>Recent</small>
+          {recent.length ? recent.slice(0, 4).map((r) => {
+            const m = majors.find((x) => x.id === r.id);
+            return m ? <button key={r.id} type="button" className="gchip" onClick={() => go('detail', r.id)}>{m.name}</button> : null;
+          }) : <span className="muted small">Majors you open appear here</span>}
+        </div>
       </div>
     </section>
   );

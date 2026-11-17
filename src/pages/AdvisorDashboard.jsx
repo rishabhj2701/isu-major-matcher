@@ -26,9 +26,9 @@ export default function AdvisorDashboard({ go }) {
   return (
     <section className="advisor" aria-labelledby="adv-heading">
       <header className="pagehead">
-        <span className="eyebrow-plain">Advisor view · grouped data · synthetic sessions</span>
-        <h1 id="adv-heading">What students are exploring</h1>
-        <p>Demand by interest, the don'ts that most often lower a top match, and where sessions are close calls. No names or records: every card is an anonymous synthetic profile run through the real engine.</p>
+        <span className="eyebrow-plain">Command center · synthetic, grouped</span>
+        <h1 id="adv-heading">Trends</h1>
+        <p>Demand, don'ts and close calls across anonymous sessions.</p>
       </header>
 
       <div className="filters">

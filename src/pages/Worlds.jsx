@@ -6,7 +6,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { WORLDS, countIdeas, summarizeThinking } from '../lib/thinking.js';
 import Icon from '../components/Icon.jsx';
 
-export default function Worlds({ onComplete, onExit }) {
+export default function Worlds({ onComplete, onExit, onSkip }) {
   const [worldIdx, setWorldIdx] = useState(-1); // -1 = map
   const [itemIdx, setItemIdx] = useState(0);
   const [picked, setPicked] = useState(null);
@@ -78,7 +78,7 @@ export default function Worlds({ onComplete, onExit }) {
           </ul>
           <div className="quest-nav">
             <button type="button" className="secondary-button" onClick={onExit}>Back to hub</button>
-            <button type="button" className="primary" onClick={() => onComplete(snapshot)}>Save to my profile <Icon name="arrow" size={14} /></button>
+            <button type="button" className="primary" onClick={() => onComplete(snapshot)}>Continue to Level 2 <Icon name="arrow" size={14} /></button>
           </div>
         </div>
       </section>
@@ -89,9 +89,9 @@ export default function Worlds({ onComplete, onExit }) {
     return (
       <section className="worlds" aria-labelledby="worlds-heading">
         <header className="pagehead">
-          <span className="eyebrow-plain">Thinking Worlds · optional · about 4 minutes</span>
-          <h1 id="worlds-heading">Pick a world to enter</h1>
-          <p>Three short, story-framed mini-games read how you like to think. Results are relative to you, shown with a range, and never change your major score.</p>
+          <span className="eyebrow-plain">Level 1 · Aptitude · ~4 min</span>
+          <h1 id="worlds-heading">Warm up your brain</h1>
+          <p>Three quick games before the quest. A reflection snapshot — never changes your major score.</p>
         </header>
         <div className="world-map">
           {WORLDS.map((w, i) => {
@@ -110,8 +110,9 @@ export default function Worlds({ onComplete, onExit }) {
         <div className="quest-nav">
           <button type="button" className="secondary-button" onClick={onExit}><Icon name="back" size={14} /> Hub</button>
           <span className="quest-selected">{completed.length} / {WORLDS.length} worlds explored</span>
+          {onSkip && completed.length === 0 && <button type="button" className="textbtn" onClick={onSkip}>Skip to Level 2</button>}
           <button type="button" className="primary" disabled={completed.length === 0} onClick={finishAll}>
-            {completed.length === WORLDS.length ? 'Reveal my snapshot' : 'Reveal with what I have'} <Icon name="arrow" size={14} />
+            {completed.length === WORLDS.length ? 'Finish Level 1' : 'Finish with what I have'} <Icon name="arrow" size={14} />
           </button>
         </div>
       </section>

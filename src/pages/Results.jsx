@@ -5,6 +5,7 @@
 import { useMemo, useState } from 'react';
 import MajorCard from '../components/MajorCard.jsx';
 import DislikeExplorer from '../components/DislikeExplorer.jsx';
+import Constellation from '../components/Constellation.jsx';
 import ThinkingSnapshot from '../components/ThinkingSnapshot.jsx';
 import Icon from '../components/Icon.jsx';
 import { matchMajors } from '../lib/matcher.js';
@@ -28,14 +29,12 @@ export default function Results({ profile, onOpenDetail, onCompare, onSummary, o
   return (
     <section className="results-page" aria-labelledby="results-heading">
       <header className="pagehead">
-        <span className="eyebrow-plain">Your matches · {ranked.length} majors ranked</span>
-        <h1 id="results-heading">Your top major matches</h1>
-        <p>
-          Based on your selections and a transparent, documented scoring model — not official advising and
-          not a predictor of success. Explanations are{' '}
-          {AI_AVAILABLE ? 'AI-assisted' : 'rule-based (AI explanation is optional and not enabled in this prototype)'}.
-        </p>
+        <span className="eyebrow-plain">Mission 3 · Reveal</span>
+        <h1 id="results-heading">Your matches</h1>
+        <p>Every score is explainable. Tap a card to see how it was built.{AI_AVAILABLE ? '' : ' Rule-based, not AI.'}</p>
       </header>
+
+      <Constellation ranked={ranked} profile={profile} onOpen={onOpenDetail} />
 
       <div className="results-grid">
         {visible.map((scored, i) => (

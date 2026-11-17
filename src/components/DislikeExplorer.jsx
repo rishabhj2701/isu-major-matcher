@@ -7,6 +7,7 @@ import { useMemo, useState } from 'react';
 import { matchMajors } from '../lib/matcher.js';
 import { interestOptions } from '../data/majors.js';
 import Icon from './Icon.jsx';
+import { track } from '../lib/events.js';
 
 const LABEL = Object.fromEntries(interestOptions.map((o) => [o.id, o.label]));
 const EMOJI = Object.fromEntries(interestOptions.map((o) => [o.id, o.emoji]));
@@ -38,6 +39,7 @@ export default function DislikeExplorer({ profile, onOpenDetail }) {
   }
 
   function toggle(id) {
+    track('dontToggle');
     setActive((prev) => {
       const next = new Set(prev);
       if (next.has(id)) next.delete(id); else next.add(id);
@@ -51,10 +53,7 @@ export default function DislikeExplorer({ profile, onOpenDetail }) {
         <h3 id="dont-heading"><Icon name="ban" size={18} /> Your don'ts, and what they changed</h3>
         <span className="badge">{active.size} of {dislikes.length} applied</span>
       </div>
-      <p className="muted">
-        Each don't lowers majors that lean on it by a capped amount — nothing is hidden. Switch one
-        off to see how the ranking would move if it stopped bothering you.
-      </p>
+      <p className="muted">Switch a don't off to see the ranking move. Nothing is ever hidden.</p>
 
       <div className="dont-toggles" role="group" aria-label="Toggle dislikes">
         {dislikes.map((d) => (
