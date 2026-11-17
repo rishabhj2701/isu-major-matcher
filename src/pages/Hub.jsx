@@ -3,6 +3,7 @@
 // which tools are shown. Everything is local and synthetic.
 
 import { majors } from '../data/majors.js';
+import { catalog } from '../data/catalog.js';
 import { alumniPosts } from '../data/alumniPosts.js';
 import Tile from '../components/Tile.jsx';
 import StatTile from '../components/StatTile.jsx';
@@ -67,7 +68,8 @@ export default function Hub({ role, profile, topScored, recent = [], go }) {
         <div className="tiles">
           <Tile icon="chart" title="Trends dashboard" blurb="Interest demand, common don'ts, status mix and top-recommended majors across recent sessions." chip="Live demo data" chipTone="gold" featured onClick={() => go('advisor')} delay={0} />
           <Tile icon="message" title="Questions students ask" blurb="The most common questions brought to advising, with a prepared, source-linked answer for each." onClick={() => go('ask')} delay={70} />
-          <Tile icon="book" title="Learning communities" blurb="Every community reference we hold, its verification status, and the official directory." onClick={() => go('communities')} delay={140} />
+          <Tile icon="layers" title="Browse all majors" blurb={`All ${catalog.length} verified undergraduate majors by college, with official catalog links.`} onClick={() => go('catalog')} delay={140} />
+          <Tile icon="book" title="Learning communities" blurb="Every community reference we hold, its verification status, and the official directory." onClick={() => go('communities')} delay={210} />
           <Tile icon="users" title="Alumni network" blurb="Experience stories students read before a session: why I chose, a real week, I switched." onClick={() => go('alumni')} delay={210} />
           <Tile icon="compass" title="Walk the student quest" blurb="See exactly what a student sees, from the quest to the advising summary." onClick={() => go('quest')} delay={280} />
         </div>
@@ -93,7 +95,7 @@ export default function Hub({ role, profile, topScored, recent = [], go }) {
       </header>
 
       <div className="stats">
-        <StatTile label="Majors in the catalog subset" value={majors.length} delay={0} />
+        <StatTile label="Verified ISU majors" value={catalog.length} sub={`${majors.length} scored by the quest`} delay={0} />
         <StatTile label="Weighted match factors" value={5} delay={60} />
         <StatTile label="Experience stories" value={alumniPosts.length} delay={120} />
         <StatTile label="Your top overlap" value={hasResults ? first.fit : 0} suffix={hasResults ? '/100' : ''} text={hasResults ? undefined : 'Not yet'} delay={180} />
@@ -103,9 +105,10 @@ export default function Hub({ role, profile, topScored, recent = [], go }) {
         <Tile icon="compass" title={hasResults ? 'Replay Major Quest' : 'Major Quest'} blurb="One question per screen, big cards, XP and levels. Your don'ts count as much as your likes." chip={hasResults ? 'Completed' : 'Start here'} chipTone={hasResults ? 'good' : 'gold'} featured={!hasResults} onClick={() => go('quest')} delay={0} />
         <Tile icon="chart" title="My results" blurb="Top matches with a factor-by-factor breakdown, radar, and a live don'ts explorer." chip={hasResults ? `${topScored.length} ranked` : 'Needs quest'} chipTone={hasResults ? 'good' : 'neutral'} disabled={!hasResults} onClick={() => go('results')} delay={70} />
         <Tile icon="bolt" title="Thinking Worlds" blurb="Three short mini-games: Number Forge, Logic Lab, Idea Garden. A reflection snapshot, never a score." chip={profile?.thinking ? 'Played' : 'Optional'} chipTone={profile?.thinking ? 'good' : 'neutral'} onClick={() => go('worlds')} delay={140} />
-        <Tile icon="book" title="Learning communities" blurb="Community references for each major, labelled by verification status, plus the official directory." onClick={() => go('communities')} delay={210} />
-        <Tile icon="users" title="Alumni network" blurb="Why I chose, a real week in, I switched from: stories from people with profiles like yours." chip="Synthetic" chipTone="neutral" onClick={() => go('alumni')} delay={280} />
-        <Tile icon="message" title="Ask & prep" blurb="Questions to bring to your advisor, generated from your answers, plus a source-cited catalog Q&A." onClick={() => go('ask')} delay={350} />
+        <Tile icon="layers" title="Browse all majors" blurb={`Every one of ${catalog.length} verified ISU undergraduate majors, searchable by college. Nothing is hidden.`} chip={`${majors.length} scored`} chipTone="good" onClick={() => go('catalog')} delay={210} />
+        <Tile icon="book" title="Learning communities" blurb="Community references for each major, labelled by verification status, plus the official directory." onClick={() => go('communities')} delay={280} />
+        <Tile icon="users" title="Alumni network" blurb="Why I chose, a real week in, I switched from: stories from people with profiles like yours." chip="Synthetic" chipTone="neutral" onClick={() => go('alumni')} delay={350} />
+        <Tile icon="message" title="Ask & prep" blurb="Questions to bring to your advisor, generated from your answers, plus a source-cited catalog Q&A." onClick={() => go('ask')} delay={420} />
       </div>
 
       <div className="hub-cols">

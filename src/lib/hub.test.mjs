@@ -62,9 +62,9 @@ const student = {
   strengths: ['logic'], careerFields: ['technology'], workStyles: ['technical'], priority: 'graduateSooner',
 };
 
-test("advisor questions include a don'ts question when the top match was penalized", () => {
+test("advisor questions include a don'ts question when a top-3 match was penalized", () => {
   const top = topMatches(student, 3);
-  assert.ok(top[0].penalty > 0, 'expected a penalized top match for this fixture');
+  assert.ok(top.some((m) => m.penalty > 0), 'expected a penalized major in the top 3 for this fixture');
   const qs = buildAdvisorQuestions(student, top);
   assert.ok(qs.some((q) => q.id === 'dislike'), 'missing dislike question');
   assert.ok(qs.some((q) => q.id === 'time'), 'missing graduate-sooner question');

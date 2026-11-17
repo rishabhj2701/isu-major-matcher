@@ -45,15 +45,17 @@ export function buildAdvisorQuestions(profile = {}, top = []) {
     });
   }
 
-  // Don'ts: one question per disliked activity that still shows up in the top match.
-  if (first && dislikes.length) {
-    const drivers = (first.dislikeDrivers ?? []).map((d) => INTEREST_LABEL[d.id] ?? d.id);
-    if (drivers.length) {
+  // Don'ts: ask about the highest-ranked recommendation that was still lowered
+  // by a dislike (it may not be #1 — the penalty often moves it down a slot).
+  if (dislikes.length) {
+    const penalized = top.slice(0, 3).find((m) => (m.dislikeDrivers ?? []).length > 0);
+    if (penalized) {
+      const drivers = penalized.dislikeDrivers.map((d) => INTEREST_LABEL[d.id] ?? d.id);
       q.push({
         id: 'dislike',
         tag: "Your don'ts",
-        text: `${first.name} leans on ${drivers.join(' and ')}, which I'd rather avoid. How heavy is that in the first two years, and are there tracks that lighten it?`,
-        why: 'Your dislikes lowered this major but did not remove it.',
+        text: `${penalized.name} leans on ${drivers.join(' and ')}, which I'd rather avoid. How heavy is that in the first two years, and are there tracks that lighten it?`,
+        why: `Your dislikes lowered ${penalized.name} by ${penalized.penalty} points but did not remove it.`,
       });
     }
   }

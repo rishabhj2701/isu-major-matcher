@@ -22,6 +22,7 @@ import Communities from './pages/Communities.jsx';
 import Alumni from './pages/Alumni.jsx';
 import Ask from './pages/Ask.jsx';
 import AdvisorDashboard from './pages/AdvisorDashboard.jsx';
+import Catalog from './pages/Catalog.jsx';
 import Icon from './components/Icon.jsx';
 import { matchMajors } from './lib/matcher.js';
 import { burstConfetti } from './lib/confetti.js';
@@ -33,6 +34,7 @@ const NAV = {
     { id: 'quest', label: 'Major Quest', icon: 'compass' },
     { id: 'results', label: 'My results', icon: 'chart', needsProfile: true },
     { id: 'worlds', label: 'Thinking Worlds', icon: 'bolt' },
+    { id: 'catalog', label: 'Browse all majors', icon: 'layers' },
     { id: 'communities', label: 'Learning communities', icon: 'book' },
     { id: 'alumni', label: 'Alumni network', icon: 'users' },
     { id: 'ask', label: 'Ask & prep', icon: 'message' },
@@ -42,6 +44,7 @@ const NAV = {
     { id: 'hub', label: 'Hub', icon: 'home' },
     { id: 'advisor', label: 'Trends dashboard', icon: 'chart' },
     { id: 'ask', label: 'Student questions', icon: 'message' },
+    { id: 'catalog', label: 'Browse all majors', icon: 'layers' },
     { id: 'communities', label: 'Learning communities', icon: 'book' },
     { id: 'alumni', label: 'Alumni network', icon: 'users' },
     { id: 'quest', label: 'Student quest (preview)', icon: 'compass' },
@@ -187,14 +190,21 @@ export default function App() {
             onSummary={() => setView('summary')}
             onRestart={() => setView('quest')}
             onPlayWorlds={() => setView('worlds')}
+            onBrowse={() => setView('catalog')}
           />
         )}
 
-        {role && view === 'detail' && profile && (
-          <MajorDetail majorId={activeMajorId} profile={profile} onBack={() => setView('results')} />
+        {role && view === 'catalog' && (
+          <Catalog onOpenScored={(id) => go('detail', id)} />
         )}
-        {role && view === 'detail' && !profile && (
-          <MajorDetail majorId={activeMajorId} profile={emptyProfile()} onBack={() => setView('communities')} />
+
+        {role && view === 'detail' && (
+          <MajorDetail
+            majorId={activeMajorId}
+            profile={profile ?? emptyProfile()}
+            hasProfile={Boolean(profile?.interests?.length)}
+            onBack={() => setView(profile?.interests?.length ? 'results' : 'catalog')}
+          />
         )}
 
         {role && view === 'compare' && profile && (

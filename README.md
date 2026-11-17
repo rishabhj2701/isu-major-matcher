@@ -29,13 +29,16 @@ needs one; everything runs in the browser on synthetic data).
    band. It is for reflection only and **never changes the fit score** (tested).
 5. **Major detail / pathway**, **Compare** (2–3 majors), **Advising summary** (printable; questions
    are now generated from the profile).
-6. **Learning communities** — every community reference grouped by major, filterable by college,
+6. **Browse all majors** — the full verified ISU undergraduate catalog (merged from
+   `feature/kiro-prototype`): search, college filter, "Scored" badges for the majors the quest can
+   score, official links for every one. Nothing is hidden.
+7. **Learning communities** — every community reference grouped by major, filterable by college,
    labelled by verification status, with the official directory link.
-7. **Alumni network** — "Why I chose", "A real week in", "I switched from", "What I wish I knew"
+8. **Alumni network** — "Why I chose", "A real week in", "I switched from", "What I wish I knew"
    stories with role badges (Current student / Alumni / Faculty / Advisor), a *people like you*
    ranking (interest + don'ts overlap with the student's profile), local upvotes, replies, and a
    compose form that stays in the browser. **All stories are synthetic and labelled as such.**
-8. **Ask & prep** — *Bring to your advisor*: questions generated from the real answers and matches,
+9. **Ask & prep** — *Bring to your advisor*: questions generated from the real answers and matches,
    each with the reason it appeared (a don'ts question, a near-tie question, a graduate-sooner
    question…), check / copy / print. *Ask the catalog*: a **rule-based, source-cited Q&A** over the
    local verified data that says "I'm not sure" below a confidence floor. Labelled *not AI*.
@@ -102,7 +105,8 @@ keys are ever placed in the browser.
 
 ## Data and verification
 
-- `src/data/majors.js` — eight majors across colleges. **Verified** against the ISU catalog: name,
+- `src/data/catalog.js` — all verified ISU undergraduate majors (name, college, degree, URL).
+- `src/data/majors.js` — 29 scored majors across every college. **Verified** against the ISU catalog: name,
   college, overview, `catalogUrl`. **Illustrative**: interest/strength/career/style weights and
   dislike sensitivity.
 - `src/data/learningCommunities.js` — associations are marked `unverified`; the UI labels them and
@@ -119,7 +123,7 @@ keys are ever placed in the browser.
 src/
   App.jsx            hub shell: sidebar tabs, Student/Advisor switch, theme, view-state nav
   pages/             Hub (+RolePicker), Quest, Worlds, Matching, Results, MajorDetail, Compare,
-                     AdvisingSummary, Communities, Alumni, Ask, AdvisorDashboard
+                     AdvisingSummary, Catalog, Communities, Alumni, Ask, AdvisorDashboard
   components/        Tile, StatTile, BarChart, SegmentedBar, DislikeExplorer, ThinkingSnapshot,
                      Icon, MajorCard, FitMeter, FactorBreakdown, RadarChart, LearningCommunities,
                      ChipGroup, ProgressBar

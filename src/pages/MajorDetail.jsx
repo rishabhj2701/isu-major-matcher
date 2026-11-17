@@ -9,14 +9,14 @@ import LearningCommunities from '../components/LearningCommunities.jsx';
 import { scoreMajor, explainMatch } from '../lib/matcher.js';
 import { majors, interestOptions } from '../data/majors.js';
 
-export default function MajorDetail({ majorId, profile, onBack }) {
+export default function MajorDetail({ majorId, profile, hasProfile = true, onBack }) {
   const major = majors.find((m) => m.id === majorId);
   if (!major) {
     return (
       <section className="panel">
         <p>Major not found.</p>
         <button type="button" className="secondary-button" onClick={onBack}>
-          ← Back to results
+          ← Back
         </button>
       </section>
     );
@@ -29,13 +29,13 @@ export default function MajorDetail({ majorId, profile, onBack }) {
   return (
     <section className="detail-page" aria-labelledby="detail-heading">
       <button type="button" className="link-button back" onClick={onBack}>
-        ← Back to results
+        ← Back
       </button>
 
       <header className="detail-head">
         <h2 id="detail-heading">{major.name}</h2>
         <p className="major-college">{major.college}</p>
-        <FitMeter fit={scored.fit} />
+        {hasProfile && <FitMeter fit={scored.fit} />}
       </header>
 
       <div className="detail-cols">
@@ -43,11 +43,20 @@ export default function MajorDetail({ majorId, profile, onBack }) {
           <h3>Academic focus</h3>
           <p>{major.summary}</p>
 
-          <h3>Why this appeared for you</h3>
-          <ul className="reason-list">
-            {reasons.map((r) => <li key={r}>{r}</li>)}
-          </ul>
-          <FactorBreakdown scored={scored} dislikeLabels={dislikeLabels} />
+          {hasProfile ? (
+            <>
+              <h3>Why this appeared for you</h3>
+              <ul className="reason-list">
+                {reasons.map((r) => <li key={r}>{r}</li>)}
+              </ul>
+              <FactorBreakdown scored={scored} dislikeLabels={dislikeLabels} />
+            </>
+          ) : (
+            <p className="muted">
+              Take the Major Quest to see your personalized fit score and a factor-by-factor
+              explanation for this major.
+            </p>
+          )}
 
           <h3>Typical introductory coursework</h3>
           {major.sampleCourses?.length ? (
