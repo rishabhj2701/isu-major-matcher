@@ -12,6 +12,7 @@ import Results from './pages/Results.jsx';
 import MajorDetail from './pages/MajorDetail.jsx';
 import Compare from './pages/Compare.jsx';
 import AdvisingSummary from './pages/AdvisingSummary.jsx';
+import Catalog from './pages/Catalog.jsx';
 import { burstConfetti } from './lib/confetti.js';
 
 const VIEWS = {
@@ -22,6 +23,7 @@ const VIEWS = {
   DETAIL: 'detail',
   COMPARE: 'compare',
   SUMMARY: 'summary',
+  CATALOG: 'catalog',
 };
 
 export default function App() {
@@ -57,7 +59,22 @@ export default function App() {
       </nav>
 
       <main id="main" className="page" ref={mainRef} tabIndex={-1}>
-        {view === VIEWS.HOME && <Home onStart={() => setView(VIEWS.QUEST)} />}
+        {view === VIEWS.HOME && (
+          <Home
+            onStart={() => setView(VIEWS.QUEST)}
+            onBrowse={() => setView(VIEWS.CATALOG)}
+          />
+        )}
+
+        {view === VIEWS.CATALOG && (
+          <Catalog
+            onOpenScored={(id) => {
+              setActiveMajorId(id);
+              setView(VIEWS.DETAIL);
+            }}
+            onBack={() => setView(profile ? VIEWS.RESULTS : VIEWS.HOME)}
+          />
+        )}
 
         {view === VIEWS.QUEST && (
           <Quest
@@ -93,14 +110,16 @@ export default function App() {
               setProfile(null);
               setView(VIEWS.QUEST);
             }}
+            onBrowse={() => setView(VIEWS.CATALOG)}
           />
         )}
 
-        {view === VIEWS.DETAIL && profile && (
+        {view === VIEWS.DETAIL && (
           <MajorDetail
             majorId={activeMajorId}
-            profile={profile}
-            onBack={() => setView(VIEWS.RESULTS)}
+            profile={profile ?? {}}
+            hasProfile={Boolean(profile)}
+            onBack={() => setView(profile ? VIEWS.RESULTS : VIEWS.CATALOG)}
           />
         )}
 

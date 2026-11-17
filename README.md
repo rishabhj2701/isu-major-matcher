@@ -78,10 +78,15 @@ are ever placed in the browser.
 
 ## Data and verification
 
-- `src/data/majors.js` — eight majors across different colleges. Each record carries a
-  `verification` object. **Verified** against the ISU catalog: name, college, overview, and the
-  official `catalogUrl`. **Illustrative** (product assumptions): the interest/strength/career/style
-  weights and dislike sensitivity.
+- `src/data/catalog.js` — the **full ISU undergraduate catalog**: all ~112 majors across the six
+  colleges, with verified name, college, degree, and official catalog URL (2026-2027 edition,
+  checked 2025-11-17). Browsable and searchable via the in-app directory; no major is hidden.
+- `src/data/majors.js` — the **scored flagship subset** (~29 majors spanning every college). Each
+  record carries a `verification` object. **Verified** against the ISU catalog: name, college,
+  overview, and the official `catalogUrl`. **Illustrative** (product assumptions): the
+  interest/strength/career/style weights and dislike sensitivity. Catalog entries link to their
+  flagship record via `scoredId`, so the directory can open a fit view for scored majors and send
+  every other major to its official page ("explore anyway").
 - `src/data/learningCommunities.js` — ISU runs many learning communities, but the specific
   major→community associations here could not be individually verified at build time, so each is
   marked `unverified` and the UI points students to the official directory rather than implying a

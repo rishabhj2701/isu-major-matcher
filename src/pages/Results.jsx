@@ -7,7 +7,7 @@ import { matchMajors } from '../lib/matcher.js';
 import { AI_AVAILABLE } from '../services/aiExplainer.js';
 import { interestOptions } from '../data/majors.js';
 
-export default function Results({ profile, onOpenDetail, onCompare, onSummary, onRestart }) {
+export default function Results({ profile, onOpenDetail, onCompare, onSummary, onRestart, onBrowse }) {
   const ranked = useMemo(() => matchMajors(profile), [profile]);
   const [showAll, setShowAll] = useState(false);
   const [compareIds, setCompareIds] = useState([]);
@@ -64,6 +64,11 @@ export default function Results({ profile, onOpenDetail, onCompare, onSummary, o
         <button type="button" className="primary" onClick={() => onSummary(ranked.slice(0, 3))}>
           Build advising summary →
         </button>
+        {onBrowse && (
+          <button type="button" className="secondary-button" onClick={onBrowse}>
+            Browse all majors
+          </button>
+        )}
         <button type="button" className="link-button" onClick={onRestart}>
           Start over
         </button>

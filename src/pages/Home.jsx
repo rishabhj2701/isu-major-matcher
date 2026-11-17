@@ -1,8 +1,8 @@
 // Welcome / landing page with a hero, process overview, and stat badges.
 
-import { majors } from '../data/majors.js';
+import { catalog } from '../data/catalog.js';
 
-export default function Home({ onStart }) {
+export default function Home({ onStart, onBrowse }) {
   return (
     <section className="home" aria-labelledby="home-heading">
       <div className="hero">
@@ -17,14 +17,21 @@ export default function Home({ onStart }) {
           pathways — with a transparent reason behind every recommendation.
         </p>
 
-        <button type="button" className="primary big" onClick={onStart}>
-          Find My Major →
-        </button>
+        <div className="hero-cta">
+          <button type="button" className="primary big" onClick={onStart}>
+            Find My Major →
+          </button>
+          {onBrowse && (
+            <button type="button" className="ghost-button" onClick={onBrowse}>
+              Browse all majors
+            </button>
+          )}
+        </div>
 
         <div className="hero-stats">
           <div className="hero-stat">
-            <b>{majors.length}</b>
-            <span>verified-core majors</span>
+            <b>{catalog.length}</b>
+            <span>verified ISU majors</span>
           </div>
           <div className="hero-stat">
             <b>5</b>
