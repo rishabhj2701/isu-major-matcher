@@ -9,10 +9,15 @@ reason behind every recommendation.
 ## What it does
 
 1. **Welcome** — a homepage that explains the tool and a single "Find My Major" action.
-2. **Guided questionnaire** — a five-step, selectable form (status, interests, dislikes, strengths
-   and working style, careers and priorities). No real IDs, transcripts, passwords, or records.
-3. **Transparent matching** — a deterministic weighted engine ranks majors and shows exactly how
-   each score was built, factor by factor.
+2. **Major Quest** — a game-style questionnaire: one question per screen with big tappable option
+   cards, an XP bar and levels, "+XP" micro-feedback, and slide transitions. It collects the same
+   profile (status, interests, dislikes, strengths, working style, careers, priority) with no real
+   IDs, transcripts, passwords, or records. The game layer is pure presentation — it changes the
+   feel, not the scoring.
+3. **Animated analysis + reveal** — a short, honest "finding your matches" sequence (describing the
+   real deterministic steps) leads into a celebratory confetti reveal of the results.
+4. **Transparent matching** — a deterministic weighted engine ranks majors and shows exactly how
+   each score was built, factor by factor, including an SVG radar of the fit profile.
 4. **Results dashboard** — top-3 majors (expandable to all), each with a fit meter, plain-language
    reasons, good-fit / caution notes, and a compare checkbox.
 5. **Major detail / pathway** — academic focus, related careers, learning communities, general
@@ -88,13 +93,16 @@ are ever placed in the browser.
 
 ```
 src/
-  components/   ProgressBar, ChipGroup, FitMeter, FactorBreakdown, MajorCard, LearningCommunities
-  pages/        Home, Questionnaire, Results, MajorDetail, Compare, AdvisingSummary
-  lib/          matcher.js (engine) + matcher.test.mjs (tests)
+  components/   ProgressBar, ChipGroup, FitMeter, FactorBreakdown, MajorCard,
+                LearningCommunities, RadarChart
+  pages/        Home, Quest (game questionnaire), Matching (analysis screen),
+                Results, MajorDetail, Compare, AdvisingSummary
+  lib/          matcher.js (engine) + matcher.test.mjs (tests),
+                useCountUp.js (score animation), confetti.js (reveal burst)
   services/     aiExplainer.js (optional AI layer, grounded + off by default)
   data/         majors.js, learningCommunities.js
   App.jsx       shell + lightweight view-state navigation (no router dependency)
-  styles.css    cardinal/gold design system, responsive, print, a11y helpers
+  styles.css    cardinal/gold design system, game HUD, motion, responsive, print, a11y
 docs/           architecture.md, demo-walkthrough.md, team-workflow.md
 ```
 

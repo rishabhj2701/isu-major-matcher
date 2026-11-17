@@ -1,17 +1,23 @@
 // Application shell. Lightweight view-state navigation (no router dependency,
 // to keep the prototype small). Holds the student profile and current view.
+//
+// Flow: Home → Quest (game-style questionnaire) → Matching (animated analysis)
+//       → Results (confetti reveal) → Detail / Compare / Summary.
 
 import { useEffect, useRef, useState } from 'react';
 import Home from './pages/Home.jsx';
-import Questionnaire from './pages/Questionnaire.jsx';
+import Quest from './pages/Quest.jsx';
+import Matching from './pages/Matching.jsx';
 import Results from './pages/Results.jsx';
 import MajorDetail from './pages/MajorDetail.jsx';
 import Compare from './pages/Compare.jsx';
 import AdvisingSummary from './pages/AdvisingSummary.jsx';
+import { burstConfetti } from './lib/confetti.js';
 
 const VIEWS = {
   HOME: 'home',
-  QUESTIONNAIRE: 'questionnaire',
+  QUEST: 'quest',
+  MATCHING: 'matching',
   RESULTS: 'results',
   DETAIL: 'detail',
   COMPARE: 'compare',
@@ -32,17 +38,18 @@ export default function App() {
     window.scrollTo({ top: 0 });
   }, [view]);
 
-  function goResults(p) {
-    setProfile(p);
-    setView(VIEWS.RESULTS);
-  }
+  // Celebrate when results appear.
+  useEffect(() => {
+    if (view === VIEWS.RESULTS) burstConfetti();
+  }, [view]);
 
   return (
     <div className="app-wrap">
       <a href="#main" className="skip-link">Skip to main content</a>
       <nav className="topbar" aria-label="Primary">
         <button type="button" className="brand" onClick={() => setView(VIEWS.HOME)}>
-          <span className="brand-mark" aria-hidden="true">●</span> ISU Major &amp; Learning-Community Matcher
+          <span className="brand-mark" aria-hidden="true">◆</span> ISU FitFinder
+          <span className="brand-sub"> · Major Quest</span>
         </button>
         <span className="demo-banner" title="This prototype uses synthetic input and illustrative data.">
           Demo data
@@ -50,14 +57,21 @@ export default function App() {
       </nav>
 
       <main id="main" className="page" ref={mainRef} tabIndex={-1}>
-        {view === VIEWS.HOME && <Home onStart={() => setView(VIEWS.QUESTIONNAIRE)} />}
+        {view === VIEWS.HOME && <Home onStart={() => setView(VIEWS.QUEST)} />}
 
-        {view === VIEWS.QUESTIONNAIRE && (
-          <Questionnaire
+        {view === VIEWS.QUEST && (
+          <Quest
             initialProfile={profile}
-            onComplete={goResults}
-            onBack={() => setView(VIEWS.HOME)}
+            onComplete={(p) => {
+              setProfile(p);
+              setView(VIEWS.MATCHING);
+            }}
+            onExit={() => setView(VIEWS.HOME)}
           />
+        )}
+
+        {view === VIEWS.MATCHING && profile && (
+          <Matching onDone={() => setView(VIEWS.RESULTS)} />
         )}
 
         {view === VIEWS.RESULTS && profile && (
@@ -77,7 +91,7 @@ export default function App() {
             }}
             onRestart={() => {
               setProfile(null);
-              setView(VIEWS.QUESTIONNAIRE);
+              setView(VIEWS.QUEST);
             }}
           />
         )}
